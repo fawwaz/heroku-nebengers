@@ -91,7 +91,7 @@ apiRoutes.get('/',function(req, res){
 
 apiRoutes.get('/ride/:ride_id', function(req, res){
 	var token = req.decoded.token;
-	var filter = req.body;
+	var filter = req.query;
 
 	filter.token = token;
 	filter.ride_id = req.params.ride_id;
@@ -105,7 +105,7 @@ apiRoutes.get('/ride/:ride_id', function(req, res){
 
 apiRoutes.get('/ride',function(req, res){
 	var token 	= req.decoded.token;
-	var filter 	= req.body;
+	var filter 	= req.query;
 	
 	filter.token = token;
 	
@@ -118,7 +118,7 @@ apiRoutes.get('/ride',function(req, res){
 
 apiRoutes.get('/ride_request/:ride_id', function(req, res){
 	var token 	= req.decoded.token;
-	var filter 	= req.body;
+	var filter 	= req.query;
 
 	filter.token = token;
 	filter.ride_id = req.params.ride_id;
