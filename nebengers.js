@@ -140,15 +140,11 @@ var Nebengers = (function(){
 	}
 
 	this.message_create = function (params, callback, handler){
-		console.log(params);
 		axios.post(this.URL_message_create,{
 			token: this.token,
 			message: params.message,
 			to_user_id: params.to_user_id,
-			params: {
-				current_latitude : params.current_latitude || this.default_current_latitude,
-				current_longitude : params.current_longitude || this.default_current_longitude
-			}
+			title: ''
 		}).then(function(response){
 			callback(response.data);
 		}).catch(function(error){
@@ -172,6 +168,21 @@ var Nebengers = (function(){
 			handler(error);
 		});
 	}
+
+	this.create_request = function (params, callback, handler){
+		var url_create_request = this.URL_explore + '/' + params.ride_id + '/createrequest';
+		
+		axios.post(url_create_request,{
+			token: this.token,
+			number_of_seat : 1,
+			optional_messages : params.optional_messages || 'ikut ya ...',
+			payment_type : 'cash'
+		}).then(function(response){
+			callback(response.data);
+		}).catch(function(error){
+			handler(error);
+		});
+	}	
 
 
 	return this;

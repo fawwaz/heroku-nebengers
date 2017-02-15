@@ -5,6 +5,7 @@ var bodyParser 	= require('body-parser');
 var morgan		= require('morgan');
 var axios		= require('axios');
 var nebengers 	= require('./nebengers');
+var path		= require('path');
 
 var jwt			= require('jsonwebtoken');
 var config		= require('./config');
@@ -18,9 +19,13 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(cors());
 
+app.get('/static/bundle.js',function(req,res){
+	res.sendFile(path.join(__dirname)+'/static/bundle.js');
+});
 
 app.get('/', function(req, res){
-	res.send('Hello! The API is at http://localhost:' + port + '/api');
+	// res.send('Hello! The API is at http://localhost:' + port + '/api');
+	res.sendFile(path.join(__dirname + '/index.html'));
 });
 
 // API routes
@@ -47,7 +52,8 @@ apiRoutes.post('/authenticate', function(req, res) {
 			res.json({
 				success: true,
 				message: 'Success',
-				token : jwttoken
+				token : jwttoken,
+				user: response.result.user
 			});
 
 		}else{
@@ -116,6 +122,19 @@ apiRoutes.get('/ride',function(req, res){
 	});
 });
 
+apiRoutes.get('/create_ride_request',function(req, res){
+	var token 	= req.decoded.token;
+	var params	= req.query;
+
+	params.token = token;
+
+	nebengers.create_request(params, function(response){
+		res.json({ success: true, message: response.message, result:response.result});
+	}, function(error){
+		res.json({ success: false, message: "Failed getting all list of ride", result:error});
+	});
+});
+
 apiRoutes.get('/ride_request/:ride_id', function(req, res){
 	var token 	= req.decoded.token;
 	var filter 	= req.query;
@@ -131,6 +150,7 @@ apiRoutes.get('/ride_request/:ride_id', function(req, res){
 })
 
 app.use('/api', apiRoutes);
+
 
 app.listen(port);
 
